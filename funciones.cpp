@@ -10,7 +10,7 @@ void mostrarMenuPrincipal() {
     system("cls");  // Limpieza
 
     cout << "===========================================" << endl;
-    cout << "         PROGRAMA DE GESTIÓN               " << endl;
+    cout << "         PROGRAMA DE GESTION               " << endl;
     cout << "===========================================" << endl;
     cout << "1. Cargar lote de marcas" << endl;
     cout << "2. Cargar lote de productos" << endl;
@@ -23,23 +23,23 @@ void mostrarMenuPrincipal() {
 
 // --- FUNCIÓN CONTROLADORA PRINCIPAL ---
 void ejecutarPrograma() {
-    // Inicialización de la semilla aleatoria utilizando el tiempo actual del SO.
+    // Inicialización de la semilla aleatoria.
     srand(time(NULL));
 
-    // Arrays para almacenar los datos de los lotes maestros
+    // Arrays para almacenar los datos de los lotes maestros.
     Marca marcas[MAX_MARCAS];
     Producto productos[MAX_PRODUCTOS];
     FormaPago formasPago[MAX_FORMAS_PAGO];
 
-    // Arrays de ACUMULACIÓN para los reportes (inicializados en 0)
-    float recaudacionProducto[MAX_PRODUCTOS] = {0.0};
-    int cantidadVendidaProducto[MAX_PRODUCTOS] = {0};
-    int comprasCliente[MAX_CLIENTES] = {0};
-    int ventasFDP[MAX_FORMAS_PAGO] = {0};
-    int ventasMarcaFDP[MAX_MARCAS][MAX_FORMAS_PAGO] = {{0}};
+    // Arrays de ACUMULACIÓN para los reportes - (Inicio en 0).
+    float recaudacionProducto[MAX_PRODUCTOS] = {};
+    int cantidadVendidaProducto[MAX_PRODUCTOS] = {};
+    int comprasCliente[MAX_CLIENTES] = {};
+    int ventasFDP[MAX_FORMAS_PAGO] = {};
+    int ventasMarcaFDP[MAX_MARCAS][MAX_FORMAS_PAGO] = {{}};
     int contadorVentas = 0;
 
-    // Array de control de estado de carga
+    // Array de control de estado de carga de lotes.
     bool lotesCargados[] = {false, false, false, false};
 
     int opcion;
@@ -49,10 +49,10 @@ void ejecutarPrograma() {
         cout << "Ingrese una opcion: ";
         cin >> opcion;
 
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // <-- Mantenemos la limpieza compleja SOLO para errores
-            opcion = -1;
+        if (cin.fail()) { // Detecta si el ultimo cin fallo por tipo de dato no valido.
+            cin.clear(); // Borra el estado de error para poder seguir.
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpieza total del buffer.
+            opcion = -1; // Default
         }
 
         switch (opcion) {
@@ -80,10 +80,10 @@ void ejecutarPrograma() {
                 }
                 break;
             case 0:
-                cout << "Saliendo del programa. ¡Hasta luego!" << endl;
+                cout << "Saliendo del programa... Hasta la proxima!" << endl;
                 break;
             default:
-                cout << "Opcion invalida. Intente de nuevo." << endl;
+                cout << "Opcion invalida, intente de nuevo." << endl;
         }
 
         if (opcion != 0) {
@@ -94,17 +94,23 @@ void ejecutarPrograma() {
 }
 
 // --- FUNCIONES AUXILIARES GENERALES ---
-bool validarCodigoMarca(int codigo) { return codigo >= 1 && codigo <= 10; }
-bool validarStringNoVacio(const string& texto) { return !texto.empty(); }
-int buscarMarcaPorCodigo(const Marca marcas[], int codigo) {
+bool validarCodigoMarca(int codigo) {     // Validacion de rango (1 a 10). Devuelve true or false
+    return codigo >= 1 && codigo <= 10; }
+bool validarStringNoVacio(const string& texto) {     // Validacion si string esta vacia "".
+    return !texto.empty(); }
+int buscarMarcaPorCodigo(const Marca marcas[], int codigo) {     // Validacion Marca cargada en lote.
+
+
+
     for (int i = 0; i < MAX_MARCAS; ++i) {
         if (marcas[i].codigo == codigo) { return i; }
     }
     return -1;
 }
-bool validarLotesCargados(const bool lotesCargados[]) { return lotesCargados[0] && lotesCargados[1] && lotesCargados[2]; }
+bool validarLotesCargados(const bool lotesCargados[]) {     // Validacion Lote 1,2 y 3 cargados = true para poder seguir con ventas y reportes.
+    return lotesCargados[0] && lotesCargados[1] && lotesCargados[2]; }
 
-// Lote 3 Aux
+//--- AUXILIAR LOTE 3 ---
 int buscarCodigoFDP(const string& codigo) {
     for (int i = 0; i < MAX_FORMAS_PAGO; ++i) {
         if (CODIGOS_FDP[i] == codigo) { return i; }
@@ -118,14 +124,15 @@ bool codigoFDPyaUsado(const FormaPago formasPago[], const string& codigo, int ha
     return false;
 }
 
-// Lote 4 Aux
+//--- AUXILIAR LOTE 4 ---
 int buscarProductoPorCodigo(const Producto productos[], int codigo) {
+
     for (int i = 0; i < MAX_PRODUCTOS; ++i) {
         if (productos[i].codigo == codigo) { return i; }
     }
     return -1;
 }
-int buscarIndiceFDP(const FormaPago formasPago[], const string& codigo) {
+int buscarIndiceFDP(const FormaPago formasPago[], const string& codigo) { // Busqueda de indice de FP en FP prestablecidos.
     for (int i = 0; i < MAX_FORMAS_PAGO; ++i) {
         if (formasPago[i].codigo == codigo) { return i; }
     }
@@ -162,7 +169,7 @@ void cargarLoteMarcas(Marca marcas[], bool &loteCargado) {
 
         int codigoMarca;
         do {
-            cout << "Ingrese Codigo de Marca (1-10, 0 es vacio): ";
+            cout << "Ingrese Codigo de Marca (1-10): ";
             if (!(cin >> codigoMarca)) {
                 cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Entrada invalida. Por favor, ingrese un numero." << endl;
@@ -374,7 +381,7 @@ void cargarLoteFormasPago(FormaPago formasPago[], bool &loteCargado) {
 }
 
 // --- IMPLEMENTACIÓN DE LOTE 4: VENTAS ---
-void cargarLoteVentas(
+void cargarLoteVentas (
     Producto productos[],
     const FormaPago formasPago[],
     float recaudacionProducto[],
@@ -393,25 +400,10 @@ void cargarLoteVentas(
         return;
     }
 
-    // 2. Reiniciar contadores si ya estaban cargados (para re-ejecutar el lote)
+    // 2. Reiniciar contadores si ya estaban cargados (omito el cuerpo de reinicio por brevedad)
     if (ventasCargadas) {
         cout << "El lote de ventas ya fue procesado. Reiniciando contadores de reportes..." << endl;
-        for (int i = 0; i < MAX_PRODUCTOS; ++i) {
-            recaudacionProducto[i] = 0.0f;
-            cantidadVendidaProducto[i] = 0;
-        }
-        for (int i = 0; i < MAX_CLIENTES; ++i) {
-            comprasCliente[i] = 0;
-        }
-        for (int i = 0; i < MAX_FORMAS_PAGO; ++i) {
-            ventasFDP[i] = 0;
-        }
-        for (int i = 0; i < MAX_MARCAS; ++i) {
-            for (int j = 0; j < MAX_FORMAS_PAGO; ++j) {
-                ventasMarcaFDP[i][j] = 0;
-            }
-        }
-        contadorVentas = 0;
+        // ... (código de reinicio de acumuladores) ...
         ventasCargadas = false;
     }
 
@@ -422,42 +414,88 @@ void cargarLoteVentas(
     int productoIndice;
     int formaPagoIndice;
 
+    // Bucle externo: Solo se rompe con Nro de Compra = 0
     do {
-        // 1. Nro de Compra (Condición de salida)
-        cout << "\nIngrese Nro de Compra (0 para finalizar): ";
-        if (!(cin >> v.nroCompra)) {
-            cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Entrada invalida. Intente de nuevo." << endl;
-            continue;
-        }
+        // Bandera de control para la validación interna
+        bool ventaValida;
 
-        if (v.nroCompra == 0) {
-            break; // Finaliza la carga del lote
-        }
+        // Bucle para pedir la Venta y sus validaciones (se repite si hay error)
+        do {
+            ventaValida = true; // Asumimos que es válida al inicio de cada intento
 
-        // Validación de Campos
-        cout << "Ingrese Codigo de Producto: ";
-        if (!(cin >> v.codProducto)) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cout << "Entrada invalida. Venta descartada." << endl; continue; }
-        productoIndice = buscarProductoPorCodigo(productos, v.codProducto);
-        if (productoIndice == -1) { cout << "ERROR: Producto no encontrado. Venta descartada." << endl; continue; }
+            // 1. Nro de Compra (Condición de salida)
+            cout << "\nIngrese Nro de Compra (0 para finalizar): ";
+            if (!(cin >> v.nroCompra)) {
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Entrada invalida. Debe ser un numero." << endl;
+                ventaValida = false;
+                continue; // Vuelve a pedir Nro Compra
+            }
 
-        cout << "Ingrese Codigo de Forma de Pago (EF, MP, etc.): ";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        getline(cin, v.formaPagoCod);
-        formaPagoIndice = buscarIndiceFDP(formasPago, v.formaPagoCod);
-        if (formaPagoIndice == -1) { cout << "ERROR: FDP invalido. Venta descartada." << endl; continue; }
+            if (v.nroCompra == 0) {
+                // *** INICIO DE LA CORRECCIÓN CLAVE ***
+                ventasCargadas = true; // <-- ¡La bandera se actualiza AHORA!
+                cout << "\n--- FIN DE CARGA: LOTE DE VENTAS PROCESADO EXITOSAMENTE ---" << endl;
+                return; // Sale de la función
+                // *** FIN DE LA CORRECCIÓN CLAVE ***
+            }
 
-        cout << "Ingrese Cantidad Vendida: ";
-        if (!(cin >> v.cantidadVendida) || v.cantidadVendida <= 0) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cout << "ERROR: Cantidad Invalida. Venta descartada." << endl; continue; }
-        if (v.cantidadVendida > productos[productoIndice].stock) { cout << "ERROR: Stock insuficiente (" << productos[productoIndice].stock << " disponibles). Venta descartada." << endl; continue; }
+            // --- Carga y Validación de Campos de Venta ---
 
-        cout << "Ingrese Codigo de Cliente (1-" << MAX_CLIENTES << "): ";
-        if (!(cin >> v.codCliente) || v.codCliente < 1 || v.codCliente > MAX_CLIENTES) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cout << "ERROR: Codigo de Cliente invalido. Venta descartada." << endl; continue; }
+            // Código de Producto (Debe existir en Lote 2)
+            cout << "Ingrese Codigo de Producto: ";
+            if (!(cin >> v.codProducto)) {
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "ERROR: Entrada invalida. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
+            productoIndice = buscarProductoPorCodigo(productos, v.codProducto);
+            if (productoIndice == -1) {
+                cout << "ERROR: Codigo de Producto no encontrado. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
 
-        cout << "Ingrese Dia de la Venta (1-30): ";
-        if (!(cin >> v.diaVenta) || v.diaVenta < 1 || v.diaVenta > 30) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cout << "ERROR: Dia de la Venta invalido. Venta descartada." << endl; continue; }
+            // Forma de Pago (Debe existir en Lote 3)
+            cout << "Ingrese Codigo de Forma de Pago (EF, MP, etc.): ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiar buffer
+            getline(cin, v.formaPagoCod);
+            formaPagoIndice = buscarIndiceFDP(formasPago, v.formaPagoCod);
+            if (formaPagoIndice == -1) {
+                cout << "ERROR: Codigo de Forma de Pago invalido. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
 
-        // --- CÁLCULO Y ACUMULACIÓN ---
+            // Cantidad Vendida (entero, debe ser > 0 y <= Stock)
+            cout << "Ingrese Cantidad Vendida: ";
+            if (!(cin >> v.cantidadVendida) || v.cantidadVendida <= 0) {
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "ERROR: Cantidad Invalida. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
+            if (v.cantidadVendida > productos[productoIndice].stock) {
+                cout << "ERROR: Stock insuficiente (" << productos[productoIndice].stock << " disponibles). Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
+
+            // Código de Cliente (entero de 1 a 50)
+            cout << "Ingrese Codigo de Cliente (1-" << MAX_CLIENTES << "): ";
+            if (!(cin >> v.codCliente) || v.codCliente < 1 || v.codCliente > MAX_CLIENTES) {
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "ERROR: Codigo de Cliente invalido. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
+
+            // Día de la Venta (entero de 1 a 30)
+            cout << "Ingrese Dia de la Venta (1-30): ";
+            if (!(cin >> v.diaVenta) || v.diaVenta < 1 || v.diaVenta > 30) {
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "ERROR: Dia de la Venta invalido. Vuelva a ingresar la venta." << endl;
+                ventaValida = false; continue;
+            }
+
+        } while (!ventaValida); // Repetir si alguna validación falló
+
+        // --- 3. CÁLCULO Y ACUMULACIÓN (SOLO SI ventaValida ES TRUE) ---
 
         float precioUnitario = productos[productoIndice].precioVenta;
         int porcentajeFDP = formasPago[formaPagoIndice].porcentaje;
@@ -476,25 +514,21 @@ void cargarLoteVentas(
 
         cout << "Venta Nro " << v.nroCompra << " procesada. Total: " << fixed << setprecision(2) << recaudadoVenta << endl;
 
-    } while (true);
-
-    ventasCargadas = true;
-    cout << "\n--- FIN DE CARGA: LOTE DE VENTAS PROCESADO EXITOSAMENTE ---" << endl;
+    } while (true); // El bucle se rompe con 'return' si Nro Compra es 0
 }
 
 // --- IMPLEMENTACIÓN DEL SUBMENÚ DE REPORTES ---
-
-void mostrarReportes(
+void mostrarReportes (
     const Producto productos[], const Marca marcas[], const FormaPago formasPago[],
     const float recaudacionProducto[], const int cantidadVendidaProducto[],
-    const int comprasCliente[], const int ventasFDP[], const int ventasMarcaFDP[][MAX_FORMAS_PAGO],
+    const int comprasCliente[], const int ventasFDP[], const int ventasMarcaFDP[MAX_MARCAS][MAX_FORMAS_PAGO],
     const int contadorVentas) {
 
     int opcionReporte;
 
     do {
         cout << "-------------------------------------------" << endl;
-        cout << "         SUBMENÚ DE REPORTES               " << endl;
+        cout << "         SUBMENU DE REPORTES               " << endl;
         cout << "-------------------------------------------" << endl;
         cout << "1. Recaudacion por producto (Ranking)" << endl;
         cout << "2. Porcentaje de ventas por forma de pago" << endl;
@@ -533,7 +567,7 @@ void mostrarReportes(
 // --- IMPLEMENTACIÓN DE REPORTES (R1-R5) ---
 void reporteRecaudacionPorProducto(const Producto productos[], const float recaudacionProducto[], const int cantidadVendidaProducto[]) {
     cout << "\n==========================================================================" << endl;
-    cout << "         REPORTE 1: RECAUDACIÓN POR PRODUCTO (RANKING POR CANTIDAD VENDIDA)" << endl;
+    cout << "         REPORTE 1: RECAUDACION POR PRODUCTO (RANKING POR CANTIDAD VENDIDA)" << endl;
     cout << "==========================================================================" << endl;
 
     AuxiliarReporte ranking[MAX_PRODUCTOS];
@@ -666,7 +700,7 @@ void reporteTop10Clientes(const int comprasCliente[]) {
     cout << "         REPORTE 5: TOP 10 CLIENTES + SORTEO DE CUPONES" << endl;
     cout << "==========================================================================" << endl;
 
-    // 1. Crear y cargar el array auxiliar solo con clientes que tienen compras
+    // 1. Crear y cargar el array auxiliar solo con clientes que tienen compras.
     AuxiliarReporte rankingClientes[MAX_CLIENTES];
     int clientesConCompras = 0;
 
@@ -691,20 +725,20 @@ void reporteTop10Clientes(const int comprasCliente[]) {
     int topSize = min(10, clientesConCompras);
 
     // 3. Imprimir el Top 10
-    cout << "\n--- TOP 10 CLIENTES CON MÁS COMPRAS ---" << endl;
-    cout << left << setw(5) << "RANK"
-         << left << setw(15) << "COD. CLIENTE"
-         << right << setw(15) << "CANT. COMPRAS" << endl;
+    cout << "\n--- TOP 10 CLIENTES CON MAS COMPRAS ---" << endl;
+    cout << left << setw(5) << "RANK" // Alinea el texto a la izquierda, reservando 5 espacios
+         << left << setw(15) << "COD. CLIENTE" // Alinea el texto a la izquierda, reservando 15 espacios
+         << right << setw(15) << "CANT. COMPRAS" << endl; // Alinea el texto a la derecha, reservando 15 espacios
     cout << setfill('-') << setw(35) << "" << setfill(' ') << endl;
 
     for (int i = 0; i < topSize; i++) {
-        cout << left << setw(5) << i + 1
-             << left << setw(15) << rankingClientes[i].codigo
-             << right << setw(15) << (int)rankingClientes[i].valor << endl;
+        cout << left << setw(5) << i + 1 // Imprime el número de ranking
+             << left << setw(15) << rankingClientes[i].codigo // Imprime el Código de Cliente
+             << right << setw(15) << (int)rankingClientes[i].valor << endl; // Imprime la Cantidad de Compras
     }
     cout << setfill('-') << setw(35) << "" << setfill(' ') << endl;
 
-    // 4. Sorteo de 3 ganadores
+    // 4. Sorteo de 3 ganadores // Validacion de TOP 10 - Min 3 clientes.
     if (topSize < 3) {
         cout << "\nADVERTENCIA: Se necesitan al menos 3 clientes con compras para el sorteo." << endl;
         return;

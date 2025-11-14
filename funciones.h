@@ -2,13 +2,12 @@
 #define FUNCIONES_H
 
 #include <iostream>
-#include <string>
 #include <iomanip>
 #include <limits> // Para numeric_limits
 
 using namespace std;
 
-// --- 1. DEFINICIÓN DE STRUCTS ---
+// --- DEFINICIÓN DE STRUCTS ---
 
 struct Marca
 {
@@ -46,7 +45,7 @@ struct AuxiliarReporte
     int indiceOriginal;
 };
 
-// --- 2. DEFINICIÓN DE CONSTANTES PARA DIMENSIONES DE ARRAYS ---
+// --- DEFINICIÓN DE CONSTANTES PARA TAMAÑO DE ARRAYS ---
 
 const int MAX_MARCAS = 10;
 const int MAX_PRODUCTOS = 20;
@@ -55,7 +54,7 @@ const int MAX_CLIENTES = 50;
 const int MAX_VENTAS = 500;
 const string CODIGOS_FDP[MAX_FORMAS_PAGO] = {"EF", "MP", "TR", "TC", "CT"};
 
-// --- 3. PROTOTIPOS DE FUNCIONES ---
+// --- PROTOTIPOS DE FUNCIONES ---
 
 // Funciones de Control y Menú
 void ejecutarPrograma(); // Función controladora principal.
@@ -91,7 +90,7 @@ void mostrarReportes(
     const int contadorVentas);
 void reporteRecaudacionPorProducto(const Producto productos[], const float recaudacionProducto[], const int cantidadVendidaProducto[]);
 void reportePorcentajeVentasFDP(const FormaPago formasPago[], const int ventasFDP[], int contadorVentas);
-void reporteVentasMarcaFDP(const Marca marcas[], const FormaPago formasPago[], const int ventasMarcaFDP[][MAX_FORMAS_PAGO]);
+void reporteVentasMarcaFDP(const Marca marcas[], const FormaPago formasPago[], const int ventasMarcaFDP[MAX_MARCAS][MAX_FORMAS_PAGO]);
 void reporteProductosSinVentas(const Producto productos[], const int cantidadVendidaProducto[]);
 void reporteTop10Clientes(const int comprasCliente[]);
 

@@ -1,14 +1,13 @@
 # depslib dependency file v1.0
-1762999943 source:c:\users\pablo\desktop\cpp\tpi_gestion\main.cpp
+1763090263 source:c:\users\pablo\desktop\cpp\tpi_gestion\main.cpp
 	"funciones.h"
 
-1763080892 c:\users\pablo\desktop\cpp\tpi_gestion\funciones.h
+1763136735 c:\users\pablo\desktop\cpp\tpi_gestion\funciones.h
 	<iostream>
-	<string>
 	<iomanip>
 	<limits>
 
-1763080817 source:c:\users\pablo\desktop\cpp\tpi_gestion\funciones.cpp
+1763136735 source:c:\users\pablo\desktop\cpp\tpi_gestion\funciones.cpp
 	<limits>
 	<iomanip>
 	<cstdlib>
